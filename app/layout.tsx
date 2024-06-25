@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 
 import { QueryProvider } from '@/providers/query-provider';
+import { SheetProvider } from '@/providers/sheet-provider';
 
 import './globals.css';
 
@@ -23,7 +24,10 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           {/* The QueryProvider component is a client component. However, wrapping components with QueryProvider does not automatically make all child components client components. */}
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <SheetProvider />
+            {children}
+          </QueryProvider>
         </body>
       </html>
     </ClerkProvider>
