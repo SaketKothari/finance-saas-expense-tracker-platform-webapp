@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 
+import { Toaster } from '@/components/ui/sonner';
 import { QueryProvider } from '@/providers/query-provider';
 import { SheetProvider } from '@/providers/sheet-provider';
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           {/* The QueryProvider component is a client component. However, wrapping components with QueryProvider does not automatically make all child components client components. */}
           <QueryProvider>
             <SheetProvider />
+            <Toaster />
             {children}
           </QueryProvider>
         </body>
