@@ -1,10 +1,12 @@
 'use client';
 
 import * as React from 'react';
+import { Trash } from 'lucide-react';
 
 import {
   ColumnDef,
   ColumnFiltersState,
+  Row,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -29,12 +31,16 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterKey: string;
+  onDelete: (rows: Row<TData>[]) => void;
+  disabled?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   filterKey,
+  onDelete,
+  disabled,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -70,6 +76,17 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        {table.getFilteredSelectedRowModel().rows.length > 0 && (
+          <Button
+            disabled={disabled}
+            size="sm"
+            variant="outline"
+            className="ml-auto font-normal text-xs"
+          >
+            <Trash className="mr-2 size-4" />
+            Delete ({table.getFilteredSelectedRowModel().rows.length})
+          </Button>
+        )}
       </div>
 
       <div className="rounded-md border">
