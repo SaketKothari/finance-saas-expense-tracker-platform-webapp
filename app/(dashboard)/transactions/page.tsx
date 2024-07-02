@@ -4,7 +4,7 @@ import { Loader2, Plus } from 'lucide-react';
 
 import { useGetTransactions } from '@/features/transactions/api/use-get-transactions';
 import { useNewTransaction } from '@/features/transactions/hooks/use-new-transaction';
-import { useBulkDeleteTransactions } from '@/features/transactions/api/use-bulk-delete-transactions'; 
+import { useBulkDeleteTransactions } from '@/features/transactions/api/use-bulk-delete-transactions';
 
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/data-table';
@@ -19,7 +19,8 @@ const TransactionsPage = () => {
   const transactionsQuery = useGetTransactions();
   const transactions = transactionsQuery.data ?? [];
 
-  const isDisabled = transactionsQuery.isLoading || deleteTransactions.isPending;
+  const isDisabled =
+    transactionsQuery.isLoading || deleteTransactions.isPending;
 
   if (transactionsQuery.isLoading) {
     return (
@@ -54,7 +55,7 @@ const TransactionsPage = () => {
           <DataTable
             columns={columns}
             data={transactions}
-            filterKey="name"
+            filterKey="payee"
             onDelete={(row) => {
               const ids = row.map((r) => r.original.id);
               deleteTransactions.mutate({ ids });

@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { Actions } from './actions';
+import { AccountColumn } from './account-column';
+import { CategoryColumn } from './category-column';
 
 // 200 because we only want the success one data from the GET API
 export type ResponseType = InferResponseType<
@@ -76,7 +78,13 @@ export const columns: ColumnDef<ResponseType>[] = [
       );
     },
     cell: ({ row }) => {
-      return <span>{row.original.category}</span>;
+      return (
+        <CategoryColumn
+          id={row.original.id}
+          category={row.original.category}
+          categoryId={row.original.categoryId}
+        />
+      );
     },
   },
   {
@@ -134,7 +142,12 @@ export const columns: ColumnDef<ResponseType>[] = [
     },
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount'));
-      return <span>{row.original.account}</span>;
+      return (
+        <AccountColumn
+          account={row.original.account}
+          accountId={row.original.accountId}
+        />
+      );
     },
   },
   {
