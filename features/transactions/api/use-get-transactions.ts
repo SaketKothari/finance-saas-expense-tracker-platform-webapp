@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 
 import { client } from '@/lib/hono';
+import { convertAmountFromMilliUnits } from '@/lib/utils';
 
 // This hook is going to communicate with the transactions.ts GET endpoint
 export const useGetTransactions = () => {
@@ -27,7 +28,10 @@ export const useGetTransactions = () => {
       }
 
       const { data } = await response.json();
-      return data;
+      return data.map((transaction) => ({
+        ...transaction,
+        amount: convertAmountFromMilliUnits(transaction.amount),
+      }));
     },
   });
 
