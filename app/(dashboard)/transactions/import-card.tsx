@@ -96,7 +96,7 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
 
     const formattedData = arrayOfData.map((item) => ({
       ...item,
-      account: convertAmountToMilliUnits(parseFloat(item.account)),
+      amount: convertAmountToMilliUnits(parseFloat(item.amount)),
       date: format(parse(item.date, dateFormat, new Date()), outputFormat),
     }));
 
