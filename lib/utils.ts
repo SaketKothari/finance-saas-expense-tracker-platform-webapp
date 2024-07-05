@@ -1,6 +1,6 @@
 import { twMerge } from 'tailwind-merge';
 import { type ClassValue, clsx } from 'clsx';
-import { eachDayOfInterval, isSameDay } from 'date-fns';
+import { eachDayOfInterval, format, isSameDay, subDays } from 'date-fns';
 
 // Need this whenever we want to dynamically add tailwind classes
 export function cn(...inputs: ClassValue[]) {
@@ -57,4 +57,30 @@ export function fillMissingDays(
   });
 
   return transactionsByDay;
+}
+
+type Period = {
+  from: string | Date | undefined;
+  to: string | Date | undefined;
+};
+
+export function formatDateRange(period?: Period) {
+  const defaultTo = new Date();
+  const defaultFrom = subDays(defaultTo, 30);
+
+  if (!period?.from) {
+    return `${format(defaultFrom, 'LLL dd')} - ${format(
+      defaultTo,
+      'LLL dd, y'
+    )}`;
+  }
+
+  if (period.to) {
+    return `${format(period.from, 'LLL dd')} - ${format(
+      period.to,
+      'LLL dd, y'
+    )}`;
+  }
+
+  return format(period.from, 'LLL dd, y');
 }

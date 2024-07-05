@@ -162,9 +162,9 @@ const app = new Hono().get(
       data: {
         remainingAmount: currentPeriod.remaining,
         remainingChange,
-        income: currentPeriod.income,
+        incomeAmount: currentPeriod.income,
         incomeChange,
-        expenses: currentPeriod.expenses,
+        expensesAmount: currentPeriod.expenses,
         expensesChange,
         categories: finalCategories,
         days,
