@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "bun ./scripts/seed.ts"
   },
   "dependencies": {
     "@clerk/backend": "^1.1.4",
