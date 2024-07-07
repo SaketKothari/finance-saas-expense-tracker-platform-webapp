@@ -8,6 +8,8 @@ import {
   CartesianGrid,
 } from 'recharts';
 
+import { CustomTooltip } from '@/components/custom-tooltip';
+
 type Props = {
   data: {
     date: string;
@@ -49,6 +51,7 @@ export const AreaVariant = ({ data }: Props) => {
           fill="url(#income)"
           className="drop-shadow-sm"
         />
+        <Tooltip content={<CustomTooltip />} />
         <Area
           type="monotone"
           dataKey="expenses"
