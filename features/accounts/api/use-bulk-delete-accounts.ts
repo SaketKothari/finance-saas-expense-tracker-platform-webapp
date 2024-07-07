@@ -26,7 +26,7 @@ export const useBulkDeleteAccounts = () => {
       toast.success('Accounts deleted :)');
       // refetch all accounts everytime you create a new account
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
-      // TODO: Also invalidate summary
+      queryClient.invalidateQueries({ queryKey: ['summary'] });
     },
     onError: () => {
       toast.error('Failed to delete accounts');
