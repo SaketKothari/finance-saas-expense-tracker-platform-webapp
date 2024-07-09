@@ -15,13 +15,13 @@ export const PlaidConnect = () => {
   useMount(() => {
     createLinkToken.mutate(undefined, {
       onSuccess: ({ data }) => {
-        console.log({ data });
+        setToken(data);
       },
     });
   });
 
   return (
-    <Button size="sm" variant="ghost">
+    <Button disabled={!token} size="sm" variant="ghost">
       Connect
     </Button>
   );

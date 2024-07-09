@@ -29,7 +29,7 @@ export const SettingsCard = () => {
             >
               {connectedBank
                 ? 'Bank account connected'
-                : 'No bank account conntected'}
+                : 'No bank account connected'}
             </div>
             <PlaidConnect />
           </div>
