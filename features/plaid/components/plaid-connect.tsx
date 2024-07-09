@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useMount } from 'react-use';
+import { usePlaidLink } from 'react-plaid-link';
 
 import { useCreateLinkToken } from '@/features/plaid/api/use-create-link-token';
 
@@ -20,8 +21,22 @@ export const PlaidConnect = () => {
     });
   });
 
+  const plaid = usePlaidLink({
+    token: token,
+    onSuccess: (publicToken) => {
+      console.log({ publicToken });
+    },
+    env: 'sandbox',
+  });
+
+  const onClick = () => {
+    plaid.open();
+  };
+
+  const isDisabled = !plaid.ready;
+
   return (
-    <Button disabled={!token} size="sm" variant="ghost">
+    <Button onClick={onClick} disabled={isDisabled} size="sm" variant="ghost">
       Connect
     </Button>
   );
