@@ -66,3 +66,9 @@ export const transactionsRelation = relations(transactions, ({ one }) => ({
 export const insertTransactionSchema = createInsertSchema(transactions, {
   date: z.coerce.date(),
 });
+
+export const connectedBanks = pgTable('connected_banks', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  accessToken: text('access_token').notNull(),
+});
