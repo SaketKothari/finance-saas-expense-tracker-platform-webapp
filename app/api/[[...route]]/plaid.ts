@@ -12,7 +12,13 @@ import {
 } from 'plaid';
 
 import { db } from '@/db/drizzle';
-import { connectedBanks } from '@/db/schema';
+import {
+  accounts,
+  categories,
+  connectedBanks,
+  transactions,
+} from '@/db/schema';
+import { convertAmountToMilliUnits } from '@/lib/utils';
 
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
@@ -71,7 +77,75 @@ const app = new Hono()
         })
         .returning();
 
-      return c.json({ data: exchange.data.access_token }, 200);
+      const plaidTransactions = await client.transactionsSync({
+        access_token: connectedBank.accessToken,
+      });
+
+      const plaidAccounts = await client.accountsGet({
+        access_token: connectedBank.accessToken,
+      });
+
+      const plaidCategories = await client.categoriesGet({});
+
+      const newAccounts = await db
+        .insert(accounts)
+        .values(
+          plaidAccounts.data.accounts.map((account) => ({
+            id: createId(),
+            name: account.name,
+            plaidId: account.account_id,
+            userId: auth.userId,
+          }))
+        )
+        .returning();
+
+      const newCategories = await db
+        .insert(categories)
+        .values(
+          plaidCategories.data.categories.map((category) => ({
+            id: createId(),
+            name: category.hierarchy.join(', '),
+            plaidId: category.category_id,
+            userId: auth.userId,
+          }))
+        )
+        .returning();
+
+      const newTransactionsValues = plaidTransactions.data.added.reduce(
+        (acc, transaction) => {
+          const account = newAccounts.find(
+            (account) => account.plaidId === transaction.account_id
+          );
+
+          const category = newCategories.find(
+            (category) => category.plaidId === transaction.category_id
+          );
+
+          const amountInMiliunits = convertAmountToMilliUnits(
+            transaction.amount
+          );
+
+          if (account) {
+            acc.push({
+              id: createId(),
+              amount: amountInMiliunits,
+              payee: transaction.merchant_name || transaction.name,
+              notes: transaction.name,
+              date: new Date(transaction.date),
+              accountId: account.id,
+              categoryId: category?.id,
+            });
+          }
+          return acc;
+        },
+        [] as (typeof transactions.$inferInsert)[]
+      );
+
+      if (newTransactionsValues.length > 0) {
+        await db.insert(transactions).values(newTransactionsValues);
+      }
+
+      return c.json({ ok: true }, 200);
     }
   );
 
