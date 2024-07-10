@@ -25,14 +25,14 @@ export const useDeleteConnectedBank = () => {
     },
     onSuccess: () => {
       toast.success('Connected bank deleted');
-    },
-    onError: () => {
-      toast.error('Failed to delete connected bank');
       queryClient.invalidateQueries({ queryKey: ['connected-bank'] });
       queryClient.invalidateQueries({ queryKey: ['summary'] });
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: () => {
+      toast.error('Failed to delete connected bank');
     },
   });
 
