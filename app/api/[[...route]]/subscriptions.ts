@@ -1,5 +1,7 @@
+import crypto from 'crypto';
 import { Hono } from 'hono';
 import { eq } from 'drizzle-orm';
+import { createId } from '@paralleldrive/cuid2';
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth';
 import { createCheckout, getSubscription } from '@lemonsqueezy/lemonsqueezy.js';
 
@@ -68,6 +70,52 @@ const app = new Hono()
     }
 
     return c.json({ data: checkoutUrl });
+  })
+  // this webhook endpoint doesn't require middleware because it's publicly available
+  .post('/webhook', async (c) => {
+    // use signature to confirm it's lemon squeezy
+    const text = await c.req.text();
+
+    const hmac = crypto.createHmac(
+      'sha256',
+      process.env.LEMONSQUEEZY_WEBHOOK_SECRET!
+    );
+    const digest = Buffer.from(hmac.update(text).digest('hex'), 'utf8');
+    const signature = Buffer.from(
+      c.req.header('x-signature') as string,
+      'utf8'
+    );
+
+    if (!crypto.timingSafeEqual(digest, signature)) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    const payload = JSON.parse(text);
+    const event = payload.meta.event_name;
+
+    const subscriptionId = payload.data.id;
+    const userId = payload.meta.custom_data.user_id;
+    const status = payload.data.attributes.status;
+
+    if (event === 'subscription_created') {
+      await db.insert(subscriptions).values({
+        id: createId(),
+        subscriptionId,
+        userId,
+        status,
+      });
+    }
+
+    if (event === 'subscription_updated') {
+      await db
+        .update(subscriptions)
+        .set({
+          status,
+        })
+        .where(eq(subscriptions.subscriptionId, subscriptionId));
+    }
+
+    return c.json({},200)
   });
 
 export default app;
