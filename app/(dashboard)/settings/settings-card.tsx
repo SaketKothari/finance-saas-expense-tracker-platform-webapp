@@ -6,6 +6,7 @@ import { PlaidConnect } from '@/features/plaid/components/plaid-connect';
 import { PlaidDisconnect } from '@/features/plaid/components/plaid-disconnect';
 import { useGetConnectedBank } from '@/features/plaid/api/use-get-connected-bank';
 
+import { useGetSubscription } from '@/features/subscriptions/api/use-get-subscription';
 import { SubscriptionCheckout } from '@/features/subscriptions/components/subscription-checkout';
 
 import { cn } from '@/lib/utils';
@@ -16,10 +17,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export const SettingsCard = () => {
   const { data: connectedBank, isLoading: isLoadingConnectedBank } =
     useGetConnectedBank();
+  const { data: subscription, isLoading: isLoadingSubscription } =
+    useGetSubscription();
 
-  const subscription = null;
-
-  if (isLoadingConnectedBank) {
+  if (isLoadingConnectedBank || isLoadingSubscription) {
     return (
       <Card className="border-none drop-shadow-sm">
         <CardHeader>
@@ -74,9 +75,11 @@ export const SettingsCard = () => {
                 !subscription && 'text-muted-foreground'
               )}
             >
-              {subscription ? 'Subscription active' : 'No subscription active'}
+              {subscription
+                ? `Subscription ${subscription.status}`
+                : 'No subscription active'}
             </div>
-            {subscription ? '' : <SubscriptionCheckout />}
+            <SubscriptionCheckout />
           </div>
         </div>
       </CardContent>
