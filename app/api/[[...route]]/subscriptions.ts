@@ -97,25 +97,48 @@ const app = new Hono()
     const userId = payload.meta.custom_data.user_id;
     const status = payload.data.attributes.status;
 
+    const [existing] = await db
+      .select()
+      .from(subscriptions)
+      .where(eq(subscriptions.subscriptionId, subscriptionId));
+
     if (event === 'subscription_created') {
-      await db.insert(subscriptions).values({
-        id: createId(),
-        subscriptionId,
-        userId,
-        status,
-      });
+      if (existing) {
+        await db
+          .update(subscriptions)
+          .set({
+            status,
+          })
+          .where(eq(subscriptions.subscriptionId, subscriptionId));
+      } else {
+        await db.insert(subscriptions).values({
+          id: createId(),
+          subscriptionId,
+          userId,
+          status,
+        });
+      }
     }
 
     if (event === 'subscription_updated') {
-      await db
-        .update(subscriptions)
-        .set({
+      if (existing) {
+        await db
+          .update(subscriptions)
+          .set({
+            status,
+          })
+          .where(eq(subscriptions.subscriptionId, subscriptionId));
+      } else {
+        await db.insert(subscriptions).values({
+          id: createId(),
+          subscriptionId,
+          userId,
           status,
-        })
-        .where(eq(subscriptions.subscriptionId, subscriptionId));
+        });
+      }
     }
 
-    return c.json({},200)
+    return c.json({}, 200);
   });
 
 export default app;
