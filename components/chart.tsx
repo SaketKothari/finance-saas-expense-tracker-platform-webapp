@@ -7,6 +7,8 @@ import {
   Loader2,
 } from 'lucide-react';
 
+import { usePaywall } from '@/features/subscriptions/hooks/use-paywall';
+
 import { Skeleton } from '@/components/ui/skeleton';
 import { BarVariant } from '@/components/bar-variant';
 import { AreaVariant } from '@/components/area-variant';
@@ -30,9 +32,13 @@ type Props = {
 
 export const Chart = ({ data = [] }: Props) => {
   const [chartType, setChartType] = useState('area');
+  const { shouldBlock, triggerPaywall } = usePaywall();
 
   const onTypeChange = (type: string) => {
-    // TODO: Add paywall
+    if (type !== 'area' && shouldBlock) {
+      triggerPaywall();
+      return;
+    }
     setChartType(type);
   };
 
