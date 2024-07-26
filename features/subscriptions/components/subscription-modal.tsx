@@ -26,10 +26,10 @@ export const SubscriptionModal = () => {
         <DialogHeader className="flex items-center space-y-4">
           <Image src="/logo-dark.svg" alt="Logo" width={36} height={36} />
           <DialogTitle className="text-center">
-            Upgraid to a paid plan
+            Upgrade to a paid plan
           </DialogTitle>
           <DialogDescription className="text-center">
-            Upgraid to a paid plan to unlock more features
+            Upgrade to a paid plan to unlock more features
           </DialogDescription>
         </DialogHeader>
         <Separator />
