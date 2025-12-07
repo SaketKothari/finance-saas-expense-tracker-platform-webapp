@@ -37,7 +37,7 @@
     "date-fns": "^3.6.0",
     "drizzle-orm": "^0.31.0",
     "drizzle-zod": "^0.5.1",
-    "hono": "^4.6.10",
+    "hono": "^4.10.7",
     "lucide-react": "^0.378.0",
     "next": "latest",
     "next-themes": "^0.3.0",
