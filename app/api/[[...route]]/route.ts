@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
+import type { NextRequest } from 'next/server';
 
 import plaid from './plaid';
 import summary from './summary';
@@ -20,10 +21,13 @@ const routes = app
   .route('/transactions', transactions)
   .route('/subscriptions', subscriptions);
 
-export const GET = handle(app);
-export const POST = handle(app);
-export const PATCH = handle(app);
-export const DELETE = handle(app);
+const handler = handle(app) as any as (
+  request: NextRequest
+) => Response | Promise<Response>;
+export const GET = handler;
+export const POST = handler;
+export const PATCH = handler;
+export const DELETE = handler;
 
 // To generate RPC types
 export type AppType = typeof routes;
