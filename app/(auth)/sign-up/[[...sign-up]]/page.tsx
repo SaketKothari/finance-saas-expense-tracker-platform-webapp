@@ -27,7 +27,7 @@ export default function Page() {
 
       {/* Second column of grid */}
       <div className="h-full bg-blue-600 hidden lg:flex items-center justify-center">
-        <Image src="/logo.svg" height={100} width={100} alt="logo" />
+        <Image src="/logo.svg" height={100} width={100} alt="logo" priority />
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 // This is a catch-all route
 // This will give to our auth provider the ability to give catch parameter, every callback URL to properly handles redirects from the authentication page
 
-import Image from 'next/image';
-import { Loader2 } from 'lucide-react';
-import { SignIn, ClerkLoaded, ClerkLoading } from '@clerk/nextjs';
+import Image from "next/image";
+import { Loader2 } from "lucide-react";
+import { SignIn, ClerkLoaded, ClerkLoading } from "@clerk/nextjs";
 
 export default function Page() {
   return (
@@ -30,7 +30,14 @@ export default function Page() {
 
       {/* Second column of grid */}
       <div className="h-full bg-blue-600 hidden lg:flex items-center justify-center">
-        <Image src="/logo.svg" height={100} width={100} alt="logo" />
+        <Image
+          src="/logo.svg"
+          height={100}
+          width={100}
+          alt="logo"
+          priority
+          className="h-auto w-auto"
+        />
       </div>
     </div>
   );

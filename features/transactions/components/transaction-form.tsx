@@ -61,7 +61,14 @@ export const TransactionForm = ({
 }: Props) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: defaultValues,
+    defaultValues: defaultValues ?? {
+      date: new Date(),
+      accountId: '',
+      categoryId: '',
+      payee: '',
+      amount: '',
+      notes: '',
+    },
   });
 
   const handleSubmit = (values: FormValues) => {
@@ -150,7 +157,8 @@ export const TransactionForm = ({
                   disabled={disabled}
                   placeholder="Add a payee"
                   {...field}
-                />
+                  value={field.value ?? ''}
+              />
               </FormControl>
             </FormItem>
           )}
