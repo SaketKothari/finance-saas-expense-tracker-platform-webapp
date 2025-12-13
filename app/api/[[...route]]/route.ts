@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { handle } from 'hono/vercel';
 import type { NextRequest } from 'next/server';
 
@@ -11,7 +12,37 @@ import subscriptions from './subscriptions';
 
 export const runtime = 'nodejs';
 
-const app = new Hono().basePath('/api');
+const app = new Hono()
+  .basePath('/api')
+  .use(
+    '*',
+    cors({
+      origin: (origin) => {
+        const allowedOrigin = process.env.NEXT_PUBLIC_APP_URL;
+
+        // If no allowed origin is configured, reject all
+        if (!allowedOrigin) {
+          return null;
+        }
+
+        // If no origin header (same-origin request), allow it
+        if (!origin) {
+          return allowedOrigin;
+        }
+
+        // Only allow the exact origin from NEXT_PUBLIC_APP_URL
+        if (origin === allowedOrigin) {
+          return origin;
+        }
+
+        // Reject all other origins
+        return null;
+      },
+      allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
+    })
+  );
 
 const routes = app
   .route('/plaid', plaid)
