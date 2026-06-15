@@ -5,11 +5,14 @@ import type { NextRequest } from "next/server";
 
 
 import plaid from "./plaid";
+import setu from "./setu";
 import summary from "./summary";
 import accounts from "./accounts";
 import categories from "./categories";
 import transactions from "./transactions";
 import subscriptions from "./subscriptions";
+import spendingAlerts from "./spending-alerts";
+import transactionSplits from "./transaction-splits";
 
 
 export const runtime = "nodejs";
@@ -69,11 +72,14 @@ const app = new Hono().basePath("/api").use(
 
 const routes = app
  .route("/plaid", plaid)
+ .route("/setu", setu)
  .route("/summary", summary)
  .route("/accounts", accounts)
  .route("/categories", categories)
  .route("/transactions", transactions)
- .route("/subscriptions", subscriptions);
+ .route("/subscriptions", subscriptions)
+ .route("/spending-alerts", spendingAlerts)
+ .route("/transaction-splits", transactionSplits);
 
 
 const handler = handle(app) as any as (

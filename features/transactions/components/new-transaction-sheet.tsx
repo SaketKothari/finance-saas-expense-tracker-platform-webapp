@@ -26,6 +26,8 @@ const formSchema = insertTransactionSchema.omit({
 
 type FormValues = z.input<typeof formSchema>;
 
+type Split = { categoryId?: string | null; amount: number; notes?: string | null };
+
 export const NewTransactionSheet = () => {
   const { isOpen, onClose } = useNewTransaction();
   const createMutation = useCreateTransaction();
@@ -53,9 +55,17 @@ export const NewTransactionSheet = () => {
 
   const isLoading = categoryQuery.isLoading || accountQuery.isLoading;
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: FormValues, splits?: Split[]) => {
     createMutation.mutate(values, {
-      onSuccess: () => {
+      onSuccess: async (data) => {
+        if (splits && splits.length > 0 && 'data' in data && data.data) {
+          const txId = (data.data as { id: string }).id;
+          await fetch(`/api/transaction-splits/${txId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(splits),
+          });
+        }
         onClose();
       },
     });
