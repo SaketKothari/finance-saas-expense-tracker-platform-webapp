@@ -1,8 +1,7 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
-import { useState } from 'react';
 import { Loader2, Plus } from 'lucide-react';
 
 import { useGetTransactions } from '@/features/transactions/api/use-get-transactions';
@@ -11,6 +10,7 @@ import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-
 import { useBulkDeleteTransactions } from '@/features/transactions/api/use-bulk-delete-transactions';
 
 import { useSelectAccount } from '@/features/accounts/hooks/use-select-account';
+import { ExportButton } from '@/features/transactions/components/export-button';
 
 import { transactions as transactionSchema } from '@/db/schema';
 import { Button } from '@/components/ui/button';
@@ -128,6 +128,7 @@ const TransactionsPageContent = () => {
               Add new
             </Button>
             <UploadButton onUpload={onUpload} />
+            <ExportButton transactions={transactions} />
           </div>
         </CardHeader>
         <CardContent>

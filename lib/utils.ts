@@ -15,10 +15,11 @@ export function convertAmountToMilliUnits(amount: number) {
   return Math.round(amount * 1000);
 }
 
-export function formatCurrency(value: number) {
-  return Intl.NumberFormat('en-US', {
+export function formatCurrency(value: number, currency = 'INR') {
+  const locale = currency === 'INR' ? 'en-IN' : 'en-US';
+  return Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'INR',
+    currency,
     minimumFractionDigits: 2,
   }).format(value);
 }

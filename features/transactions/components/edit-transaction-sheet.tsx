@@ -70,9 +70,18 @@ export const EditTransactionSheet = () => {
     categoryQuery.isLoading ||
     accountQuery.isLoading;
 
-  const onSubmit = (values: FormValues) => {
+  type Split = { categoryId?: string | null; amount: number; notes?: string | null };
+
+  const onSubmit = (values: FormValues, splits?: Split[]) => {
     editMutation.mutate(values, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        if (id && splits && splits.length > 0) {
+          await fetch(`/api/transaction-splits/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(splits),
+          });
+        }
         onClose();
       },
     });
@@ -94,14 +103,13 @@ export const EditTransactionSheet = () => {
     ? {
         accountId: transactionQuery.data.accountId,
         categoryId: transactionQuery.data.categoryId,
-        amount: convertAmountFromMilliUnits(
-          transactionQuery.data.amount
-        ).toString(),
-        date: transactionQuery.data.date
-          ? new Date(transactionQuery.data.date)
-          : new Date(),
+        amount: convertAmountFromMilliUnits(transactionQuery.data.amount).toString(),
+        date: transactionQuery.data.date ? new Date(transactionQuery.data.date) : new Date(),
         payee: transactionQuery.data.payee ?? '',
         notes: transactionQuery.data.notes ?? '',
+        receiptUrl: (transactionQuery.data as any).receiptUrl ?? '',
+        upiRef: (transactionQuery.data as any).upiRef ?? '',
+        taxCategory: (transactionQuery.data as any).taxCategory ?? '',
       }
     : {
         accountId: '',
@@ -110,6 +118,9 @@ export const EditTransactionSheet = () => {
         date: new Date(),
         payee: '',
         notes: '',
+        receiptUrl: '',
+        upiRef: '',
+        taxCategory: '',
       };
 
   return (
